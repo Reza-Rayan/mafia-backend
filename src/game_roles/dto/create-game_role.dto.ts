@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator';
-import { Role } from 'src/@enums/Role.enum';
+import { GameRole } from 'src/@enums/Game-Role.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateGameRoleDto {
@@ -27,12 +27,12 @@ export class CreateGameRoleDto {
 
     @ApiProperty({
         description: 'The category of the game role',
-        enum: Role,
-        example: Role.CITIZEN,
+        enum: GameRole,
+        example: GameRole.CITIZEN,
     })
     @IsNotEmpty()
-    @IsEnum(Role, {
-        message: `Category must be one of the following values: ${Object.values(Role).join(', ')}`
+    @IsEnum(GameRole, {
+        message: `Category must be one of the following values: ${Object.values(GameRole).join(', ')}`
     })
-    category: Role;
+    category: GameRole;
 }

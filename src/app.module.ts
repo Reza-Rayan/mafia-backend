@@ -9,6 +9,7 @@ import { CommentsModule } from './comments/comments.module';
 import { GameRolesModule } from './game_roles/game_roles.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './@interceptors/transform.interceptor';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { TransformInterceptor } from './@interceptors/transform.interceptor';
     }),
     ArticlesModule,
     CommentsModule,
-    GameRolesModule
+    GameRolesModule,
+    UsersModule
   ],
   controllers: [],
   providers: [

@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { Role } from "src/@enums/Role.enum";
+import { GameRole as Role } from "src/@enums/Game-Role.enum";
 
 // Define the Category enum
 export enum Category {
