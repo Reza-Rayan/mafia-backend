@@ -1,27 +1,29 @@
 import { UserRole } from "src/@enums/User-Role.enum";
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
+
+@Entity()
 export class User {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
     @Column()
-    name: string;
+    name?: string;
 
     @Column()
-    nick_name: string;
+    nick_name?: string;
 
     @Column()
     phone: string;
 
     @Column({ nullable: true })
-    avatar: string;
+    avatar?: string;
 
-    @Column()
-    bio: string;
+    @Column({ nullable: true })
+    bio?: string;
 
-    @Column()
-    email: string;
+    @Column({ nullable: true })
+    email?: string;
 
     @Column({
         type:"enum",
@@ -30,9 +32,9 @@ export class User {
     })
     role:UserRole;
 
-    @Column()
-    national_code:string;
+    @Column({ nullable: true })
+    national_code?:string;
 
-    @Column()
-    city: string;
+    @Column({ nullable: true })
+    city?: string;
 }

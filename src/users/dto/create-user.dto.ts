@@ -29,6 +29,7 @@ export class CreateUserDto {
     })
     @IsNotEmpty()
     @IsString()
+    @Length(11)
     phone: string;
 
     @ApiProperty({
