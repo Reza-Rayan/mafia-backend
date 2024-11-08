@@ -7,6 +7,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { CommentsModule } from './comments/comments.module';
 import { GameRolesModule } from './game_roles/game_roles.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TransformInterceptor } from './@interceptors/transform.interceptor';
 
 @Module({
   imports: [
@@ -24,6 +26,11 @@ import { GameRolesModule } from './game_roles/game_roles.module';
     GameRolesModule
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide:APP_INTERCEPTOR,
+      useClass:TransformInterceptor
+    }
+  ],
 })
 export class AppModule {}
