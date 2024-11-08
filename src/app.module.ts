@@ -6,6 +6,7 @@ import { ArticlesModule } from './articles/articles.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { CommentsModule } from './comments/comments.module';
+import { GameRolesModule } from './game_roles/game_roles.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { CommentsModule } from './comments/comments.module';
       serveRoot: '/uploads',
     }),
     ArticlesModule,
-    CommentsModule
+    CommentsModule,
+    GameRolesModule
   ],
   controllers: [],
   providers: [],
