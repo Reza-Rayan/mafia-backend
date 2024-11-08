@@ -90,4 +90,46 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
+
+  @Patch(':id/request-provider')
+  @ApiOperation({ summary: 'Request to be a provider by changing role to PENDING' })
+  @ApiParam({
+    name: 'id',
+    description: 'The unique identifier of the user',
+    type: String,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The user has successfully requested to be a provider.',
+    type: User,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'User role cannot be changed to PENDING if already in PENDING or another status',
+  })
+  async requestProvider(@Param('id') id: string) {
+    const updatedUser = await this.usersService.changeRoleToPending(id);
+    return updatedUser;
+  }
+
+
+  @Patch('accept-pending')
+  @ApiOperation({ summary: 'Accept all pending users and change their role to PROVIDER' })
+  @ApiResponse({
+    status: 200,
+    description: 'All pending users have successfully been updated to PROVIDER.',
+    type: [User], // Returning an array of users
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No pending users found',
+  })
+  acceptPendingUsers() {
+    return this.usersService.acceptPendingUsers();
+  }
+
 }

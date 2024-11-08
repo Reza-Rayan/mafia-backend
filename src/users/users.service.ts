@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,19 +25,89 @@ export class UsersService {
     return await this.userRepository.save(newUser);
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    const users = await this.userRepository.find()
+    if(users.length===0){
+      throw new NotFoundException("کاربری وجود ندارد");
+    }
+    return users
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    const user = await this.userRepository.findOne({where:{id}});
+
+    if(!user){
+      throw new NotFoundException("کاربر مورد نظر وجود ندارد");
+    }
+    return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException('کاربر مورد نظر وجود ندارد');
+    }
+
+    // Update the user data with the provided DTO
+    Object.assign(user, updateUserDto);
+
+    // Save the updated user back to the database
+    return await this.userRepository.save(user);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} user`;
+
+  async remove(id: string) {
+    const user = await this.userRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException('کاربر مورد نظر وجود ندارد');
+    }
+
+
+    await this.userRepository.delete(id);
+
+    return { message: `کاربر با آیدی ${id} حذف شد.` };
   }
+
+
+  // Request of User ro be provider
+  async changeRoleToPending(id: string) {
+    const user = await this.userRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException('کاربر مورد نظر وجود ندارد');
+    }
+
+    // Check if the user already has the "PENDING" role or another conflicting role
+    if (user.role === UserRole.PENDING) {
+      throw new ConflictException('کاربر در حال حاضر درخواست ارائه دهنده دارد.');
+    }
+
+    // Update the user role to "PENDING"
+    user.role = UserRole.PENDING;
+     this.userRepository.save(user);
+
+     return {message:"درخواست شما با موفقیت ارسال شد. منتظر بمانید"}
+  }
+  // End here
+
+
+  // Accept Request of user to be provider
+  async acceptPendingUsers() {
+    const pendingUsers = await this.userRepository.find({ where: { role: UserRole.PENDING } });
+
+    if (pendingUsers.length === 0) {
+      throw new NotFoundException('هیچ کاربری با وضعیت در حال انتظار وجود ندارد.');
+    }
+    const updatedUsers = await Promise.all(
+      pendingUsers.map(async (user) => {
+        user.role = UserRole.PROVIDER;
+        return this.userRepository.save(user);
+      })
+    );
+
+    return updatedUsers;
+  }
+// End here
 }
